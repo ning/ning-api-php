@@ -3,7 +3,9 @@
 require_once("OAuth.php");
 
 class NingApi {
-    const BASE_URL = "https://external.ningapis.com/xn/rest";
+    const SECURE_PROTOCOL = "https://";
+    const INSECURE_PROTOCOL = "http://";
+    const BASE_URL = "external.ningapis.com/xn/rest";
     const API_VERSION = "1.0";
 
     // The maximum number of seconds to allow cURL to execute
@@ -33,17 +35,21 @@ class NingApi {
     /**
      * Create a Ning API request URL
      */
-    public function buildUrl($path) {
-        $parts = array(self::BASE_URL, $this->subdomain, self::API_VERSION,
-            $path);
-        return join("/", $parts);
+    public function buildUrl($path, $secure=FALSE) {
+        $protocol = $secure ? self::SECURE_PROTOCOL : self::INSECURE_PROTOCOL;
+        $base = $protocol . self::BASE_URL;
+        $parts = array($base, $this->subdomain, self::API_VERSION, $path);
+        $url = join("/", $parts);
+        return $url;
     }
 
     /**
      * Call the Ning API
      */
-    public function call($path, $method="GET", $body=NULL, $headers=NULL) {
-        $url = $this->buildUrl($path);
+    public function call($path, $method="GET", $body=NULL, $headers=NULL,
+        $secure=FALSE) {
+
+        $url = $this->buildUrl($path, $secure);
 
         $headers = $headers ? $headers : array();
 
@@ -142,7 +148,8 @@ class NingApi {
             "Authorization: Basic ". $credentials
         );
 
-        $result = $this->call("Token", "POST", NULL, $headers);
+        // Calls to the token endpoint must always be secure
+        $result = $this->call("Token", "POST", NULL, $headers, TRUE);
 
         return $result;
     }
