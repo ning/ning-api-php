@@ -1,27 +1,24 @@
 <?php
+
 class NingException extends Exception {
 
     // HTTP status code
     private $httpStatus;
-
     // Ning API error code
     private $ningCode;
-
     // Ning API error subcode
     private $ningSubcode;
-
     // Ning API trace number
     private $ningTrace;
 
-    public function __construct($message, $status=NULL, $code=NULL,
-        $subcode=NULL, $trace=NULL) {
+    public function __construct($message, $status=NULL, $code=NULL, $subcode=NULL, $trace=NULL) {
 
-            $this->httpStatus = $status;
-            $this->ningCode = $code;
-            $this->ningSubcode = $subcode;
-            $this->ningTrace = $trace;
+        $this->httpStatus = $status;
+        $this->ningCode = $code;
+        $this->ningSubcode = $subcode;
+        $this->ningTrace = $trace;
 
-            parent::__construct($message);
+        parent::__construct($message);
     }
 
     public function getHttpStatus() {
@@ -44,12 +41,12 @@ class NingException extends Exception {
         $errorMessage = $this->getMessage();
         if ($this->getHttpStatus()) {
             $errorMessage = sprintf("%s (%s)", $errorMessage,
-                $this->getHttpStatus());
+                            $this->getHttpStatus());
         }
 
         if ($this->getNingCode() && $this->getNingSubcode()) {
             $errorMessage = sprintf("%s %s-%s", $errorMessage,
-                $this->getNingCode(), $this->getNingSubcode());
+                            $this->getNingCode(), $this->getNingSubcode());
         }
 
         return $errorMessage;
@@ -57,7 +54,7 @@ class NingException extends Exception {
 
     public static function generate($response) {
         return new NingException($response['reason'],
-            $response['status'], $response['code'], $response['subcode']);
+                $response['status'], $response['code'], $response['subcode']);
     }
+
 }
-?>
