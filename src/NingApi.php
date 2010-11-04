@@ -1,5 +1,8 @@
 <?php
 
+define('SRC_PATH', dirname(__FILE__));
+define('OBJECTS_PATH', SRC_PATH . '/objects');
+set_include_path(get_include_path() . PATH_SEPARATOR . SRC_PATH . PATH_SEPARATOR . OBJECTS_PATH);
 require_once('OAuth.php');
 require_once('NingException.php');
 require_once('NingObject.php');
@@ -13,15 +16,15 @@ class NingApi {
     // The maximum number of seconds to allow cURL to execute
     const CURL_TIMEOUT = 10;
     // Ning network subdomain (ie. 'apiexample' in apiexample.ning.com)
-    protected $subdomain = 'apiexample';
+    public $subdomain = '';
     // Ning user email address
-    protected $email = 'user@email.com';
+    protected $email = '';
     // Ning user password
-    protected $password = 'password';
+    protected $password = '';
     // Consumer key found at [subdomain].ning.com/main/extend/keys
-    protected $consumerKey = '12345678-1234-1234-1234-abcd1234abcd';
+    protected $consumerKey = '';
     // Consumer secret found at [subdomain].ning.com/main/extend/keys
-    protected $consumerSecret = '1234abcd-1234-abcd-1234-abcd1234abcd';
+    protected $consumerSecret = '';
     protected $requestToken = null;
     private static $_instance = null;
 
@@ -33,8 +36,16 @@ class NingApi {
     }
 
     public function __construct() {
+        $this->_requireUserSpecificData();
         $this->_initAuthTokens();
         $this->_initNingObjects();
+    }
+
+    private function _requireUserSpecificData() {
+        if (!$this->subdomain || !$this->email || !$this->consumerKey
+                || !$this->consumerSecret || !$this->password) {
+            throw new NingException("Missing one or more of the following required constants in " . __FILE__ . ": subdomain, email, password, consumerKey, consumerSecret");
+        }
     }
 
     private function _initAuthTokens() {
@@ -51,6 +62,7 @@ class NingApi {
         $this->network = new NingNetwork();
         $this->photo = new NingPhoto();
         $this->user = new NingUser();
+        $this->video = new NingVideo();
     }
 
     public function login($email, $password) {
@@ -148,11 +160,8 @@ class NingApi {
 
         $result = json_decode($json, TRUE);
 
-        if (empty($result)) {
-            throw new NingException('Empty result');
-        }
-
         if (!$result['success']) {
+            print_r($result);
             throw NingException::generate($result);
         }
 

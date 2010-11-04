@@ -1,46 +1,57 @@
 <?php
 
 require_once('NingApi.php');
-require_once(dirname(__FILE__) . '/objects/NingActivityItem.php');
-require_once(dirname(__FILE__) . '/objects/NingBlogPost.php');
-require_once(dirname(__FILE__) . '/objects/NingBroadcastMessage.php');
-require_once(dirname(__FILE__) . '/objects/NingComment.php');
-require_once(dirname(__FILE__) . '/objects/NingNetwork.php');
-require_once(dirname(__FILE__) . '/objects/NingPhoto.php');
-require_once(dirname(__FILE__) . '/objects/NingUser.php');
+require_once('NingActivityItem.php');
+require_once('NingBlogPost.php');
+require_once('NingBroadcastMessage.php');
+require_once('NingComment.php');
+require_once('NingNetwork.php');
+require_once('NingPhoto.php');
+require_once('NingUser.php');
+require_once('NingVideo.php');
 
 abstract class NingObject {
 
     protected $objectKey;
-    protected $defaultFields = array('id', 'author', 'createdDate', 'updatedDate', 'title', 'description',
-        'visibility', 'approved', 'commentCount', 'url', 'tags', 'author.fullName', 'author.iconUrl',
-        'author.url');
+    protected $defaultFields = array('id', 'author', 'createdDate');
     protected $extraFields = array();
+    protected $lastAnchor = null;
+    protected $pageNumber = 1;
 
+    const AUTHOR = 'author';
     const RECENT = 'recent';
     const COUNT = 'count';
     const FIELDS = 'fields';
     const CREATED_AFTER = 'createdAfter';
     const ID = 'id';
     const ALPHA = 'alpha';
+    const ANCHOR = 'anchor';
+
+    const DEFAULT_COUNT = 100;
 
     public function __construct() {
         $this->defaultFields = array_merge($this->defaultFields, $this->extraFields);
     }
 
-    protected function create($args) {
+    protected function create($args = array()) {
         return NingApi::instance()->post($this->objectKey, $args);
     }
 
-    protected function fetch($args) {
+    protected function fetch($args = array()) {
+        $this->addDefaultFields($args);
         return NingApi::instance()->get($this->objectKey, $args);
     }
 
-    protected function update($args) {
+    protected function fetchN($n, $args = array()) {
+        $args[self::COUNT] = $n;
+        return $this->fetch($args);
+    }
+
+    protected function update($args = array()) {
         return NingApi::instance()->put($this->objectKey, $args);
     }
 
-    protected function delete($args) {
+    protected function delete($args = array()) {
         return NingApi::instance()->delete($this->objectKey, $args);
     }
 
@@ -51,16 +62,14 @@ abstract class NingObject {
 
     protected function deleteById($id, $args=array()) {
         $args[self::ID] = $id;
-        return $this->update($args);
+        return $this->delete($args);
     }
 
     protected function fetchRecent($args = array()) {
-        if (!isset($args[self::FIELDS])) {
-            $args[self::FIELDS] = implode(',', $this->defaultFields);
-        }
+        $this->addDefaultFields($args);
         $params = http_build_query($args);
         $path = $this->objectKey . '/' . self::RECENT . '?' . $params;
-        return $this->get($path);
+        return NingApi::instance()->get($path);
     }
 
     protected function fetchNRecent($n=1, $args = array()) {
@@ -68,9 +77,28 @@ abstract class NingObject {
         return $this->fetchRecent($args);
     }
 
+    protected function fetchByAuthor($author, $args = array()) {
+        $args[self::AUTHOR] = $author;
+        return $this->fetch($args);
+    }
+
     protected function getCount($args = array()) {
         $path = $this->objectKey . '/' . self::COUNT;
-        return $this->get($path, $args);
+        return NingApi::instance()->get($path, $args);
+    }
+
+    protected function fetchRecentNextPage($args = array()) {
+        $result = $this->fetchNRecent(self::DEFAULT_COUNT, $args);
+        $this->addLastAnchor($result);
+        $result['pageNumber'] = $this->pageNumber;
+        $result['pageFrom'] = ($this->pageNumber - 1) * self::DEFAULT_COUNT;
+        $result['pageTo'] = $result['pageFrom'] + count($result['entry']);
+        $this->pageNumber++;
+        if ($result['lastPage'] == 1) {
+            $this->pageNumber = 1;
+        }
+
+        return $result;
     }
 
     protected function getCountCreatedAfter($date, $args = array()) {
@@ -86,8 +114,26 @@ abstract class NingObject {
     }
 
     protected function fetchAlphabetical($args = array()) {
-        $path = $this->objectKey . '/' . self::COUNT;
-        return $this->get($path, $args);
+        $path = $this->objectKey . '/' . self::ALPHA;
+        $this->addDefaultFields($args);
+        return NingApi::instance()->get($path, $args);
+    }
+
+    protected function fetchNAlphabetical($n, $args = array()) {
+        $args[self::COUNT] = $n;
+        return $this->fetchAlphabetical($args);
+    }
+
+    private function addDefaultFields(&$args) {
+        if (!isset($args[self::FIELDS])) {
+            $args[self::FIELDS] = implode(',', $this->defaultFields);
+        }
+    }
+
+    private function addLastAnchor(&$args) {
+        if (!is_null($this->lastAnchor)) {
+            $args[self::ANCHOR] = $this->lastAnchor;
+        }
     }
 
 }

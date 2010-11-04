@@ -4,7 +4,12 @@ require_once('NingObject.php');
 
 class NingActivityItem extends NingObject {
 
-    protected $objectKey = 'ActivityItem';
+    protected $objectKey = 'Activity';
+    protected $extraFields = array('attachedTo', 'attachedToAuthor', 'attachedToType', 'author',
+        'contentId', 'createdDate', 'description', 'id', 'image', 'type', 'title', 'url',
+        'attachedToAuthor.fullName', 'attachedToAuthor.url', 'attachedToAuthor.iconUrl',
+        'author.fullName', 'author.url', 'author.iconUrl', 'image.url', 'image.width',
+        'image.height');
 
     public function fetchNRecent($n = 1, $args = array()) {
         return parent::fetchNRecent($n, $args);
@@ -14,8 +19,12 @@ class NingActivityItem extends NingObject {
         return parent::fetchRecent($args);
     }
 
-    public function delete($args) {
+    public function delete($args = array()) {
         return parent::delete($args);
+    }
+
+    public function deleteById($id, $args = array()) {
+        return parent::deleteById($id, $args);
     }
 
     public function getCount($args = array()) {

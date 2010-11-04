@@ -5,12 +5,28 @@ require_once('NingObject.php');
 class NingUser extends NingObject {
 
     protected $objectKey = 'User';
+    protected $extraFields = array('email', 'fullName', 'iconUrl', 'birthdate', 'commentCount',
+        'gender', 'location', 'isOwner', 'isAdmin', 'isMember', 'isBlocked', 'state', 'statusMessage',
+        'profileQuestions', 'author.fullName', 'author.iconUrl', 'author.url');
+
+    public function __construct() {
+        return parent::__construct();
+    }
 
     public function fetch($args) {
         return parent::fetch($args);
     }
 
     public function update($args) {
+        return parent::update($args);
+    }
+
+    public function addStatusMessage($userId, $message, $args = array()) {
+        $args = array(
+            "id" => $userId,
+            "statusMessage" => $message
+        );
+
         return parent::update($args);
     }
 
@@ -24,6 +40,10 @@ class NingUser extends NingObject {
 
     public function fetchAlphabetical($args = array()) {
         return parent::fetchAlphabetical($args);
+    }
+
+    public function fetchNAlphabetical($n, $args = array()) {
+        return parent::fetchNAlphabetical($n, $args);
     }
 
     public function getCount($args = array()) {

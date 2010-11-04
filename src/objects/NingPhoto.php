@@ -5,13 +5,15 @@ require_once('NingObject.php');
 class NingPhoto extends NingObject {
 
     protected $objectKey = 'Photo';
-    protected $extraFields = array('image.url', 'image.width', 'image.height');
+    protected $extraFields = array('author', 'commentCount', 'createdDate', 'description', 'id',
+        'image', 'tags', 'title', 'updatedDate', 'url', 'visibility', 'author.fullName',
+        'author.url', 'author.iconUrl', 'image.url', 'image.width', 'image.height');
 
-    public function create($args) {
+    public function create($args = array()) {
         return parent::create($args);
     }
 
-    public function update($args) {
+    public function update($args = array()) {
         return parent::update($args);
     }
 
@@ -19,7 +21,7 @@ class NingPhoto extends NingObject {
         return parent::updateById($id, $args);
     }
 
-    public function fetch($args) {
+    public function fetch($args = array()) {
         return parent::fetch($args);
     }
 
@@ -31,8 +33,12 @@ class NingPhoto extends NingObject {
         return parent::fetchRecent($args);
     }
 
-    public function delete($args) {
+    public function delete($args = array()) {
         return parent::delete($args);
+    }
+
+    public function deleteById($id, $args = array()) {
+        return parent::deleteById($id, $args);
     }
 
     public function getCount($args = array()) {
