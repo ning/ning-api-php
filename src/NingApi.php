@@ -1,6 +1,6 @@
 <?php
 
-define('SRC_PATH', dirname(__FILE__));
+define('SRC_PATH', __DIR__);
 define('OBJECTS_PATH', SRC_PATH . '/objects');
 set_include_path(get_include_path() . PATH_SEPARATOR . SRC_PATH . PATH_SEPARATOR . OBJECTS_PATH);
 require_once('OAuth.php');
@@ -35,9 +35,26 @@ class NingApi {
         return self::$_instance;
     }
 
-    public function __construct() {
-        $this->_requireUserSpecificData();
-        $this->_initAuthTokens();
+    public function __construct($subdomain=null, $consumerKey=null, $consumerSecret=null, $email=null, $password=null) {
+        if ($subdomain) {
+            $this->subdomain = $subdomain;
+        }
+        if ($consumerKey) {
+            $this->consumerKey = $consumerKey;
+        }
+        if ($consumerSecret) {
+            $this->consumerSecret = $consumerSecret;
+        }
+        if ($email) {
+            $this->email = $email;
+        }
+        if ($password) {
+            $this->password = $password;
+        }
+
+        if ($this->consumerKey && $this->consumerSecret) {
+            $this->_initAuthTokens($this->consumerKey, $this->consumerSecret);
+        }
         $this->_initNingObjects();
     }
 
@@ -48,8 +65,8 @@ class NingApi {
         }
     }
 
-    private function _initAuthTokens() {
-        $this->consumerToken = new OAuthConsumer($this->consumerKey, $this->consumerSecret);
+    private function _initAuthTokens($consumerKey, $consumerSecret) {
+        $this->consumerToken = new OAuthConsumer($consumerKey, $consumerSecret);
         $this->signatureMethod = new OAuthSignatureMethod_HMAC_SHA1();
         $this->login($this->email, $this->password);
     }
@@ -63,6 +80,16 @@ class NingApi {
         $this->photo = new NingPhoto();
         $this->user = new NingUser();
         $this->video = new NingVideo();
+    }
+
+    public function setSubdomain($subdomain) {
+        $this->subdomain = $subdomain;
+    }
+
+    public function setConsumerTokens($consumerKey, $consumerSecret) {
+        $this->consumerKey = $consumerKey;
+        $this->consumerSecret = $consumerSecret;
+        $this->_initAuthTokens($this->consumerKey, $this->consumerSecret);
     }
 
     public function login($email, $password) {
@@ -91,7 +118,7 @@ class NingApi {
      * Call the Ning API
      */
     public function call($path, $method='GET', $body=NULL, $headers=NULL, $secure=FALSE) {
-
+        $this->_requireUserSpecificData();
         $url = $this->buildUrl($path, $secure);
         $headers = $headers ? $headers : array();
 
@@ -147,8 +174,7 @@ class NingApi {
         try {
             $json = curl_exec($ch);
         } catch (Exception $e) {
-            echo 'Found exception trying to curl: ' . $e->getMessage();
-            #throw new NingException($e->getMessage());
+            throw new NingException($e->getMessage());
         }
 
 
@@ -161,7 +187,6 @@ class NingApi {
         $result = json_decode($json, TRUE);
 
         if (!$result['success']) {
-            print_r($result);
             throw NingException::generate($result);
         }
 
