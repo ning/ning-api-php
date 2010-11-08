@@ -55,6 +55,10 @@ class NingApi {
         if ($this->consumerKey && $this->consumerSecret) {
             $this->_initAuthTokens($this->consumerKey, $this->consumerSecret);
         }
+
+        if ($this->email && $this->password) {
+            $this->login($this->email, $this->password);
+        }
         $this->_initNingObjects();
     }
 
@@ -68,7 +72,6 @@ class NingApi {
     private function _initAuthTokens($consumerKey, $consumerSecret) {
         $this->consumerToken = new OAuthConsumer($consumerKey, $consumerSecret);
         $this->signatureMethod = new OAuthSignatureMethod_HMAC_SHA1();
-        $this->login($this->email, $this->password);
     }
 
     private function _initNingObjects() {
