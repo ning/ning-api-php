@@ -92,12 +92,14 @@ class NingApi {
 
     public function setSubdomain($subdomain) {
         $this->subdomain = $subdomain;
+        self::$_instance = $this;
     }
 
     public function setConsumerTokens($consumerKey, $consumerSecret) {
         $this->consumerKey = $consumerKey;
         $this->consumerSecret = $consumerSecret;
         $this->_initAuthTokens($this->consumerKey, $this->consumerSecret);
+        self::$_instance = $this;
     }
 
     public function login($email, $password) {
@@ -109,6 +111,7 @@ class NingApi {
         $this->oauthToken = $result['entry']['oauthToken'];
         $this->oauthTokenSecret = $result['entry']['oauthTokenSecret'];
         $this->requestToken = new OAuthConsumer($this->oauthToken, $this->oauthTokenSecret);
+        self::$_instance = $this;
     }
 
     /**
