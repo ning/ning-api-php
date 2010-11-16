@@ -60,12 +60,17 @@ class NingApi {
             $this->login($this->email, $this->password);
         }
         $this->_initNingObjects();
+
+        //set the static $_instance variable for singleton access
+        self::$_instance = $this;
     }
 
     private function _requireUserSpecificData() {
-        if (!$this->subdomain || !$this->email || !$this->consumerKey
-                || !$this->consumerSecret || !$this->password) {
-            throw new NingException("Missing one or more of the following required constants in " . __FILE__ . ": subdomain, email, password, consumerKey, consumerSecret");
+        $required = array('subdomain', 'email', 'consumerKey', 'consumerSecret', 'password');
+        foreach ($required as $val) {
+            if (!$this->{$val}) {
+                throw new NingException("Failed to find the value for '$val'");
+            }
         }
     }
 
@@ -124,7 +129,7 @@ class NingApi {
         $this->_requireUserSpecificData();
         $url = $this->buildUrl($path, $secure);
         $headers = $headers ? $headers : array();
-
+        
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_TIMEOUT, self::CURL_TIMEOUT);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -172,7 +177,7 @@ class NingApi {
         if (count($headers) > 0) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         }
-
+        
         $json = null;
         try {
             $json = curl_exec($ch);
