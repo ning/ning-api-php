@@ -65,8 +65,7 @@ class NingApi {
         self::$_instance = $this;
     }
 
-    private function _requireUserSpecificData() {
-        $required = array('subdomain', 'email', 'consumerKey', 'consumerSecret', 'password');
+    private function _requireUserSpecificData($required = array('subdomain', 'email', 'consumerKey', 'consumerSecret', 'password')) {
         foreach ($required as $val) {
             if (!$this->{$val}) {
                 throw new NingException("Failed to find the value for '$val'");
@@ -77,6 +76,7 @@ class NingApi {
     private function _initAuthTokens($consumerKey, $consumerSecret) {
         $this->consumerToken = new OAuthConsumer($consumerKey, $consumerSecret);
         $this->signatureMethod = new OAuthSignatureMethod_HMAC_SHA1();
+        self::$_instance = $this;
     }
 
     private function _initNingObjects() {
@@ -103,6 +103,14 @@ class NingApi {
     }
 
     public function login($email, $password) {
+        try{
+            $this->_requireUserSpecificData(array('subdomain','consumerKey','consumerSecret'));
+        }catch(Exception $e){
+            $message = $e->getMessage();
+            throw new NingException("You must specify the subdomain, consumerKey, and consumerSecret before calling login(). ".$message);
+        }
+        $this->email = $email;
+        $this->password = $password;
         $credentials = base64_encode($email . ':' . $password);
         $headers = array(
             'Authorization: Basic ' . $credentials
@@ -129,7 +137,10 @@ class NingApi {
      * Call the Ning API
      */
     public function call($path, $method='GET', $body=NULL, $headers=NULL, $secure=FALSE) {
-        $this->_requireUserSpecificData();
+        if($path != 'Token'){
+            //unless we're authenticating, we need all user data
+            $this->_requireUserSpecificData();
+        }
         $url = $this->buildUrl($path, $secure);
         $headers = $headers ? $headers : array();
         
