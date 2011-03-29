@@ -66,7 +66,7 @@ class NingPhotoTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testGetCountCreatedInLastNDays() {
-        $result = NingApi::instance()->photo->getCountCreatedInLastNDays(7);
+        $result = NingApi::instance()->photo->getCountCreatedInLastNDays(3);
         $this->assertTrue($result['success']);
     }
 
