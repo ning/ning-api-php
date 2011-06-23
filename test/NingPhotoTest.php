@@ -2,6 +2,9 @@
 
 require_once('NingTestHelper.php');
 
+/**
+ * @group Photo
+ */
 class NingPhotoTest extends PHPUnit_Framework_TestCase {
 
     public static function photoData() {

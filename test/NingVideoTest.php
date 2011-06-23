@@ -2,6 +2,9 @@
 
 require_once('NingTestHelper.php');
 
+/**
+ * @group Video
+ */
 class NingVideoTest extends PHPUnit_Framework_TestCase {
 
     public function testFetchRecent() {

@@ -2,6 +2,9 @@
 
 require_once('NingTestHelper.php');
 
+/**
+ * @group BlogPost
+ */
 class NingBlogPostTest extends PHPUnit_Framework_TestCase {
 
     public function createNewBlogPost() {

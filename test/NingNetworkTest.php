@@ -2,6 +2,9 @@
 
 require_once('NingTestHelper.php');
 
+/**
+ * @group Network
+ */
 class NingNetworkTest extends PHPUnit_Framework_TestCase {
 
     public function testFetch() {

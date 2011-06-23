@@ -2,6 +2,10 @@
 
 require_once('NingTestHelper.php');
 
+/**
+ * @group BroadcastMessage
+ * @group admin
+ */
 class NingBroadcastMessageTest extends PHPUnit_Framework_TestCase {
 
     public function testCreate() {

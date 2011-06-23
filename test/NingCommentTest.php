@@ -2,6 +2,9 @@
 
 require_once('NingTestHelper.php');
 
+/**
+ * @group Comment
+ */
 class NingCommentTest extends PHPUnit_Framework_TestCase {
 
     public function testCreate() {

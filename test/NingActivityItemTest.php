@@ -2,6 +2,9 @@
 
 require_once('NingNetworkTest.php');
 
+/**
+ * @group Activity
+ */
 class NingActivityItemTest extends PHPUnit_Framework_TestCase {
 
     public function testFetchRecent() {
