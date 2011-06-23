@@ -14,13 +14,6 @@ class NingUserTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result['success']);
     }
 
-    public function testUpdate() {
-        $recent = NingApi::instance()->user->fetch(array());
-        $user = $recent['entry'][0];
-        $result = NingApi::instance()->user->Update($user);
-        $this->assertTrue($result['success']);
-    }
-
     public function testFetchRecent() {
         $result = NingApi::instance()->user->fetchRecent();
         $this->assertTrue($result['success']);
@@ -33,7 +26,7 @@ class NingUserTest extends PHPUnit_Framework_TestCase {
 
     public function testAddStatusMessage() {
         $recent = NingApi::instance()->user->fetch(array());
-        $userId = $recent['entry'][0]['id'];
+        $userId = $recent['entry']['id'];
         $message = "Hey guys just statusing up some messages.";
         $result = NingApi::instance()->user->addStatusMessage($userId, $message);
         $this->assertTrue($result['success']);
