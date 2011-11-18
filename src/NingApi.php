@@ -143,7 +143,7 @@ class NingApi {
         }
         $url = $this->buildUrl($path, $secure);
         $headers = $headers ? $headers : array();
-        
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_TIMEOUT, self::CURL_TIMEOUT);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -191,7 +191,7 @@ class NingApi {
         if (count($headers) > 0) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         }
-        
+
         $json = null;
         try {
             $json = curl_exec($ch);
