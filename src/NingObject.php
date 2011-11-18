@@ -22,6 +22,7 @@ abstract class NingObject {
     const RECENT = 'recent';
     const COUNT = 'count';
     const FIELDS = 'fields';
+    const SUCCESS = 'success';
     const CREATED_AFTER = 'createdAfter';
     const ID = 'id';
     const ALPHA = 'alpha';
@@ -69,7 +70,9 @@ abstract class NingObject {
         $this->addDefaultFields($args);
         $params = http_build_query($args);
         $path = $this->objectKey . '/' . self::RECENT . '?' . $params;
-        return NingApi::instance()->get($path);
+        $result = NingApi::instance()->get($path);
+        self::saveAnchor($result);
+        return $result;
     }
 
     protected function fetchNRecent($n=1, $args = array()) {
@@ -88,8 +91,8 @@ abstract class NingObject {
     }
 
     protected function fetchRecentNextPage($args = array()) {
+        $this->addLastAnchor($args);
         $result = $this->fetchNRecent(self::DEFAULT_COUNT, $args);
-        $this->addLastAnchor($result);
         $result['pageNumber'] = $this->pageNumber;
         $result['pageFrom'] = ($this->pageNumber - 1) * self::DEFAULT_COUNT;
         $result['pageTo'] = $result['pageFrom'] + count($result['entry']);
@@ -124,16 +127,30 @@ abstract class NingObject {
         return $this->fetchAlphabetical($args);
     }
 
+    /**
+     * Adds the request fields that are common to all Ning API requests.
+     */
     private function addDefaultFields(&$args) {
         if (!isset($args[self::FIELDS])) {
             $args[self::FIELDS] = implode(',', $this->defaultFields);
         }
     }
 
+    /**
+     * Adds the most recent anchor to the request arguments
+     */
     private function addLastAnchor(&$args) {
         if (!is_null($this->lastAnchor)) {
             $args[self::ANCHOR] = $this->lastAnchor;
         }
     }
 
+    /**
+     * Saves a local copy of the anchor value in the result
+     */
+    private function saveAnchor($result) {
+        if ($result[self::SUCCESS]) {
+            $this->lastAnchor = $result[self::ANCHOR];
+        }
+    }
 }

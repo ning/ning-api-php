@@ -38,6 +38,10 @@ class NingUser extends NingObject {
         return parent::fetchRecent($args);
     }
 
+    public function fetchRecentNextPage($args = array()) {
+        return parent::fetchRecentNextPage($args);
+    }
+
     public function fetchAlphabetical($args = array()) {
         return parent::fetchAlphabetical($args);
     }

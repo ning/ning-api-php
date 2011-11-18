@@ -23,6 +23,10 @@ class NingVideo extends NingObject {
         return parent::fetchRecent($args);
     }
 
+    public function fetchRecentNextPage($args = array()) {
+        return parent::fetchRecentNextPage($args);
+    }
+
     public function getCount($args = array()) {
         return parent::getCount($args);
     }
@@ -36,5 +40,3 @@ class NingVideo extends NingObject {
     }
 
 }
-
-?>

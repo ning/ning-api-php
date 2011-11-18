@@ -33,6 +33,10 @@ class NingPhoto extends NingObject {
         return parent::fetchRecent($args);
     }
 
+    public function fetchRecentNextPage($args = array()) {
+        return parent::fetchRecentNextPage($args);
+    }
+
     public function delete($args = array()) {
         return parent::delete($args);
     }
