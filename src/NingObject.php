@@ -9,6 +9,8 @@ require_once('NingNetwork.php');
 require_once('NingPhoto.php');
 require_once('NingUser.php');
 require_once('NingVideo.php');
+require_once('NingFriend.php');
+require_once('NingTag.php');
 
 abstract class NingObject {
 
@@ -27,6 +29,12 @@ abstract class NingObject {
     const ID = 'id';
     const ALPHA = 'alpha';
     const ANCHOR = 'anchor';
+    const ATTACHED_TO = 'attachedTo';
+    const FRIEND = 'friend';
+
+    const SORT_RECENT = 'recent';
+    const SORT_ALPHA = 'alpha';
+    const SORT_UNORDERED = 'list';
 
     const DEFAULT_COUNT = 100;
 
@@ -66,18 +74,67 @@ abstract class NingObject {
         return $this->delete($args);
     }
 
-    protected function fetchRecent($args = array()) {
+    protected function fetchSorted($sortType, $args = array()) {
         $this->addDefaultFields($args);
         $params = http_build_query($args);
-        $path = $this->objectKey . '/' . self::RECENT . '?' . $params;
+        $path = $this->objectKey . '/' . $sortType . '?' . $params;
         $result = NingApi::instance()->get($path);
         self::saveAnchor($result);
         return $result;
     }
 
+    protected function fetchRecent($args = array()) {
+        return self::fetchSorted(self::SORT_RECENT, $args);
+    }
+
+    protected function fetchAlpha($args = array()) {
+        return self::fetchSorted(self::SORT_ALPHA, $args);
+    }
+
+    protected function fetchUnordered($args = array()) {
+        return self::fetchSorted(self::SORT_UNORDERED, $args);
+    }
+
     protected function fetchNRecent($n=1, $args = array()) {
         $args[self::COUNT] = $n;
-        return $this->fetchRecent($args);
+        return self::fetchSorted(self::SORT_RECENT, $args);
+    }
+
+    protected function fetchNAlpha($n=1, $args = array()) {
+        $args[self::COUNT] = $n;
+        return self::fetchSorted(self::SORT_ALPHA, $args);
+    }
+
+    protected function fetchNUnordered($n=1, $args = array()) {
+        $args[self::COUNT] = $n;
+        return self::fetchSorted(self::SORT_UNORDERED, $args);
+    }
+
+    protected function fetchSortedNextPage($sortType, $args = array()) {
+        $this->addLastAnchor($args);
+        $this->addDefaultCount($args);
+        $result = $this->fetchSorted($sortType, $args);
+        $result['pageNumber'] = $this->pageNumber;
+        $result['pageFrom'] = ($this->pageNumber - 1) * self::DEFAULT_COUNT;
+        $result['pageTo'] = $result['pageFrom'] + count($result['entry']);
+        $this->pageNumber++;
+        if ($result['lastPage'] == 1) {
+            $this->pageNumber = 1;
+        }
+
+        return $result;
+    }
+
+    protected function fetchRecentNextPage($args = array()) {
+        return self::fetchSortedNextPage(self::SORT_RECENT, $args);
+    }
+
+    protected function fetchAlphaNextPage($args = array()) {
+        return self::fetchSortedNextPage(self::SORT_ALPHA, $args);
+    }
+
+    protected function fetchUnorderedNextPage($args = array()) {
+        return self::fetchSortedNextPage(self::SORT_UNORDERED, $args);
     }
 
     protected function fetchByAuthor($author, $args = array()) {
@@ -88,20 +145,6 @@ abstract class NingObject {
     protected function getCount($args = array()) {
         $path = $this->objectKey . '/' . self::COUNT;
         return NingApi::instance()->get($path, $args);
-    }
-
-    protected function fetchRecentNextPage($args = array()) {
-        $this->addLastAnchor($args);
-        $result = $this->fetchNRecent(self::DEFAULT_COUNT, $args);
-        $result['pageNumber'] = $this->pageNumber;
-        $result['pageFrom'] = ($this->pageNumber - 1) * self::DEFAULT_COUNT;
-        $result['pageTo'] = $result['pageFrom'] + count($result['entry']);
-        $this->pageNumber++;
-        if ($result['lastPage'] == 1) {
-            $this->pageNumber = 1;
-        }
-
-        return $result;
     }
 
     protected function getCountCreatedAfter($date, $args = array()) {
@@ -151,6 +194,15 @@ abstract class NingObject {
     private function saveAnchor($result) {
         if ($result[self::SUCCESS]) {
             $this->lastAnchor = $result[self::ANCHOR];
+        }
+    }
+
+    /**
+     * Adds a default count parameter if it hasn't been set
+     */
+    private function addDefaultCount(&$args) {
+        if (!isset($args[self::COUNT])) {
+            $args[self::COUNT] = self::DEFAULT_COUNT;
         }
     }
 }

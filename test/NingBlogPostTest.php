@@ -11,6 +11,7 @@ class NingBlogPostTest extends PHPUnit_Framework_TestCase {
         $args = array();
         $args['description'] = "Test blog post description.";
         $args['title'] = "Test blog post title.";
+        $args['tag'] = "tests";
         return NingApi::instance()->blogPost->create($args);
     }
 

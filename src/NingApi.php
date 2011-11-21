@@ -88,6 +88,8 @@ class NingApi {
         $this->photo = new NingPhoto();
         $this->user = new NingUser();
         $this->video = new NingVideo();
+        $this->friend = new NingFriend();
+        $this->tag = new NingTag();
     }
 
     public function setSubdomain($subdomain) {
