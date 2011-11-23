@@ -11,6 +11,7 @@ class NingPhotoTest extends PHPUnit_Framework_TestCase {
         $parts = array(
             "title" => "Photo Title",
             "description" => "Photo Description",
+            "tag" => "tests",
             "file" => "@" . __DIR__ . "/files/sample.jpg"
         );
         return $parts;
