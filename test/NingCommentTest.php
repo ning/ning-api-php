@@ -7,6 +7,9 @@ require_once('NingTestHelper.php');
  */
 class NingCommentTest extends PHPUnit_Framework_TestCase {
 
+    /**
+     * @group create
+     */
     public function testCreate() {
         $args = array();
         $args['description'] = "This is a test comment.";
@@ -30,6 +33,9 @@ class NingCommentTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group delete
+     */
     public function testDelete() {
         $args = array();
         $blogPosts = NingApi::instance()->blogPost->fetchNRecent();

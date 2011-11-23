@@ -15,11 +15,17 @@ class NingBlogPostTest extends PHPUnit_Framework_TestCase {
         return NingApi::instance()->blogPost->create($args);
     }
 
+    /**
+     * @group create
+     */
     public function testCreate() {
         $result = $this->createNewBlogPost();
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group delete
+     */
     public function testDelete() {
         $newBlogPost = $this->createNewBlogPost();
         $args = array('id' => $newBlogPost['id']);
@@ -27,6 +33,9 @@ class NingBlogPostTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group update
+     */
     public function testUpdate() {
         $newBlogPost = $this->createNewBlogPost();
         $args = array('id' => $newBlogPost['id']);
@@ -41,17 +50,26 @@ class NingBlogPostTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group count
+     */
     public function testGetCount() {
         $args = array('createdAfter' => gmdate('c',@strtotime("-2 days")));
         $result = NingApi::instance()->blogPost->getCount($args);
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group count
+     */
     public function testGetCountCreatedAfter() {
         $result = NingApi::instance()->blogPost->getCountCreatedAfter(gmdate('c',@strtotime("-2 days")));
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group count
+     */
     public function testGetCountCreatedInLastNDays() {
         $result = NingApi::instance()->blogPost->getCountCreatedInLastNDays(3);
         $this->assertTrue($result['success']);

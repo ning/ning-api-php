@@ -7,6 +7,9 @@ require_once('NingTestHelper.php');
  */
 class NingUserTest extends PHPUnit_Framework_TestCase {
 
+    /**
+     * @group nc
+     */
     public function testFetch() {
         $recent = NingApi::instance()->user->fetchRecent();
         $args = array('id' => $recent['entry'][0]['id']);
@@ -14,17 +17,26 @@ class NingUserTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group nc
+     */
     public function testFetchRecent() {
         $result = NingApi::instance()->user->fetchRecent();
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group nc
+     */
     public function testFetchNRecent() {
         $result = NingApi::instance()->user->fetchNRecent(5);
         $this->assertTrue($result['success']);
     }
 
-    public function testAddStatusMessage() {
+    /**
+     * @group update
+     */
+    public function testUpdateStatusMessage() {
         $recent = NingApi::instance()->user->fetch(array());
         $userId = $recent['entry']['id'];
         $message = "Hey guys just statusing up some messages.";

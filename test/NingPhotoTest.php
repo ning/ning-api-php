@@ -17,17 +17,26 @@ class NingPhotoTest extends PHPUnit_Framework_TestCase {
         return $parts;
     }
 
+    /**
+     * @group create
+     */
     public function testCreate() {
         $result = NingApi::instance()->photo->create(self::photoData());
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group update
+     */
     public function testUpdate() {
         $newPhoto = NingApi::instance()->photo->create(self::photoData());
         $result = NingApi::instance()->photo->update($newPhoto);
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group update
+     */
     public function testUpdateById() {
         $newPhoto = NingApi::instance()->photo->create(self::photoData());
         $args = array('id' => $newPhoto['id']);
@@ -52,23 +61,35 @@ class NingPhotoTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group delete
+     */
     public function testDelete() {
         $newPhoto = NingApi::instance()->photo->create(self::photoData());
         $result = NingApi::instance()->photo->delete($newPhoto);
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group count
+     */
     public function testGetCount() {
         $args = array('createdAfter' => gmdate('c'));
         $result = NingApi::instance()->photo->getCount($args);
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group count
+     */
     public function testGetCountCreatedAfter() {
         $result = NingApi::instance()->photo->getCountCreatedAfter(gmdate('c'));
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group count
+     */
     public function testGetCountCreatedInLastNDays() {
         $result = NingApi::instance()->photo->getCountCreatedInLastNDays(3);
         $this->assertTrue($result['success']);

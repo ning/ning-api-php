@@ -12,6 +12,9 @@ class NingActivityItemTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($result['success']);
     }
 
+    /**
+     * @group delete
+     */
     public function testDelete() {
         $item = NingApi::instance()->activityItem->fetchRecent();
         $result = NingApi::instance()->activityItem->delete($item['entry'][0]);
