@@ -6,7 +6,7 @@ class NingPhoto extends NingObject {
 
     protected $objectKey = 'Photo';
     protected $extraFields = array('author', 'commentCount', 'createdDate', 'description', 'id',
-        'image', 'tags', 'title', 'updatedDate', 'url', 'visibility', 'author.fullName',
+        'image', 'topTags', 'title', 'updatedDate', 'url', 'visibility', 'author.fullName',
         'author.url', 'author.iconUrl', 'image.url', 'image.width', 'image.height');
 
     public function create($args = array()) {

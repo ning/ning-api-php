@@ -6,7 +6,7 @@ class NingBlogPost extends NingObject {
 
     protected $objectKey = 'BlogPost';
     protected $extraFields = array('approved', 'commentCount', 'description', 'publishStatus',
-        'publishTime', 'tags', 'title', 'updatedDate', 'url', 'visibility', 'author.fullName',
+        'publishTime', 'topTags', 'title', 'updatedDate', 'url', 'visibility', 'author.fullName',
         'author.url', 'author.iconUrl');
 
     public function fetch($args = array()) {
