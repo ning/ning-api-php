@@ -12,7 +12,7 @@ class NingFriend extends NingObject {
 	}
 
 	public function delete($author, $args = array()) {
-		$args[parrent::ID] = $author;
+		$args[parent::ID] = $author;
 		return parent::delete($args);
 	}
 
