@@ -2,19 +2,13 @@
 
 require_once('NingObject.php');
 
-class NingPhoto extends NingObject {
+class NingDiscussion extends NingObject {
 
-    protected $objectKey = 'Photo';
-
+    protected $objectKey = 'Discussion';
     protected $extraFields = array(
         'title',
         'description',
         'url',
-        'imageUrl',
-        'imageId',
-        'imageWidth',
-        'imageHeight',
-        'imageRotation',
         'featureTime',
         'slug',
         'tagNames',

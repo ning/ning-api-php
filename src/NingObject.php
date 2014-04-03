@@ -1,21 +1,22 @@
 <?php
 
 require_once('NingApi.php');
-require_once('NingActivityItem.php');
 require_once('NingBlogPost.php');
-require_once('NingBroadcastMessage.php');
+require_once('NingDiscussion.php');
+require_once('NingPhoto.php');
+require_once('NingBundle.php');
+require_once('NingUser.php');
+require_once('NingMemberCategory.php');
 require_once('NingComment.php');
 require_once('NingNetwork.php');
-require_once('NingPhoto.php');
-require_once('NingUser.php');
-require_once('NingVideo.php');
-require_once('NingFriend.php');
-require_once('NingTag.php');
+require_once('NingSitePage.php');
+require_once('NingGroup.php');
+require_once('NingMessage.php');
 
 abstract class NingObject {
 
     protected $objectKey;
-    protected $defaultFields = array('id', 'author', 'createdDate');
+    protected $defaultFields = array('id', 'createdDate', 'updatedDate', 'author');
     protected $extraFields = array();
     protected $lastAnchor = null;
     protected $pageNumber = 1;
