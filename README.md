@@ -8,6 +8,8 @@ their Ning Networks. The [Ning 3.0 API Documentation][3] contains a complete API
 reference.
 
 For the Ning 2.0 version of this client, use branch [ning2-apiv1-master][4].
+Please use the Ning 2.0 version if your Ning Network was created before March
+13, 2013.
 
 
 Support
