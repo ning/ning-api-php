@@ -1,7 +1,8 @@
 Overview
 ========
 
-[ning-api-php][1] is a PHP client for accessing the [Ning][2] API.
+[ning-api-php][1] is a PHP client for accessing the [Ning][2] API for Ning Networks
+created after March 13, 2013.
 
 The Ning API is a RESTful API that allows developers to access the content on
 their Ning Networks.
