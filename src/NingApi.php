@@ -196,7 +196,6 @@ class NingApi {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_TIMEOUT, self::$CURL_TIMEOUT);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_SSLVERSION,3);
 
         $isMultipart = $this->isMultipart($body);
 
